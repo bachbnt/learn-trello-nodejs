@@ -22,6 +22,7 @@ export const authVerifier =
     try {
       const authorization = req.header('Authorization');
       const token = authorization && authorization.split('Bearer ')[1];
+      console.log(token);
 
       if (!token) {
         throw new HttpError(StatusCode.UNAUTHORIZED, Message.UNAUTHORIZED);

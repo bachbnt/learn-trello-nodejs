@@ -17,4 +17,12 @@ projectRouter.post(
   projectController.postProject
 );
 
+projectRouter.put(RoutePath.HOME, authVerifier(), projectController.putProject);
+
+projectRouter.delete(
+  RoutePath.HOME,
+  authVerifier(),
+  projectController.deleteProject
+);
+
 export default projectRouter;

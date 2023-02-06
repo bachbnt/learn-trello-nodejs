@@ -18,6 +18,17 @@ class ProjectService extends Singleton {
   async readProject(condition: Object): Promise<ProjectDocument | null> {
     return await ProjectModel.findOne(condition);
   }
+
+  async updateProject(
+    condition: Object,
+    value: Object
+  ): Promise<ProjectDocument | null> {
+    return await ProjectModel.findOneAndUpdate(condition, value, { new: true });
+  }
+
+  async deleteProject(condition: Object): Promise<any> {
+    return await ProjectModel.deleteOne(condition);
+  }
 }
 
 const projectService = ProjectService.getInstance();

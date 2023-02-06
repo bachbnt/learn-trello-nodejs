@@ -33,7 +33,7 @@ export const projectSchema = new Schema(
       },
     ],
   },
-  { collection: DbSchema.USER }
+  { collection: DbSchema.PROJECT }
 );
 
 export const ProjectModel = mongoose.model<ProjectDocument>(

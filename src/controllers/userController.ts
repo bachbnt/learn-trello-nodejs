@@ -1,4 +1,5 @@
 import StatusCode from '@constants/statusCode';
+import httpHandler, { HttpError, HttpSuccess } from '@core/httpHandler';
 import Singleton from '@core/singleton';
 import userService from '@services/userService';
 import { NextFunction, Request, Response } from 'express';
@@ -16,15 +17,13 @@ class UserController extends Singleton {
     try {
       const users = await userService.readUsers();
 
-      return res.status(StatusCode.OK).json({
-        status: StatusCode.OK,
-        data: users,
-      });
+      return httpHandler.success(
+        req,
+        res,
+        new HttpSuccess(StatusCode.OK, users)
+      );
     } catch (error: any) {
-      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-        status: StatusCode.INTERNAL_SERVER_ERROR,
-        message: error.message,
-      });
+      return httpHandler.error(req, res, new HttpError());
     }
   }
 
@@ -37,15 +36,13 @@ class UserController extends Singleton {
       const _user = req.body;
       const user = await userService.createUser(_user);
 
-      return res.status(StatusCode.OK).json({
-        status: StatusCode.OK,
-        data: user,
-      });
+      return httpHandler.success(
+        req,
+        res,
+        new HttpSuccess(StatusCode.OK, user)
+      );
     } catch (error: any) {
-      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-        status: StatusCode.INTERNAL_SERVER_ERROR,
-        message: error.message,
-      });
+      return httpHandler.error(req, res, new HttpError());
     }
   }
 

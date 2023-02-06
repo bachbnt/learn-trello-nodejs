@@ -41,8 +41,57 @@ class ProjectController extends Singleton {
         throw new HttpError(StatusCode.BAD_REQUEST, Message.DUPLICATED);
       }
 
-      await projectService.createProject({ name, key, ...others });
+      const newProject = await projectService.createProject({
+        name,
+        key,
+        ...others,
+      });
 
+      return httpHandler.success(
+        req,
+        res,
+        new HttpSuccess(StatusCode.CREATED, newProject)
+      );
+    } catch (error: any) {
+      return httpHandler.error(req, res, error);
+    }
+  }
+
+  async putProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      const { id, ...others } = req.body;
+
+      const project = await projectService.updateProject(
+        { _id: id },
+        { ...others }
+      );
+
+      if (!project) {
+        throw new HttpError(StatusCode.BAD_REQUEST, Message.BAD_REQUEST);
+      }
+
+      return httpHandler.success(
+        req,
+        res,
+        new HttpSuccess(StatusCode.OK, project)
+      );
+    } catch (error: any) {
+      return httpHandler.error(req, res, error);
+    }
+  }
+
+  async deleteProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      const { id } = req.body;
+      await projectService.deleteProject({ _id: id });
       return httpHandler.success(req, res, new HttpSuccess());
     } catch (error: any) {
       return httpHandler.error(req, res, error);

@@ -11,26 +11,22 @@ class IssueService extends Singleton {
   }
 
   async createIssue(issue: Issue): Promise<IssueDocument> {
-    const {
-      name,
-      summary,
-      description,
-      type,
-      priority,
-      project,
-      assignee,
-      reporter,
-    } = issue;
-    return await new IssueModel({
-      name,
-      summary,
-      description,
-      type,
-      priority,
-      project,
-      assignee,
-      reporter,
-    }).save();
+    return await new IssueModel(issue).save();
+  }
+
+  async readIssue(condition: Object): Promise<IssueDocument | null> {
+    return await IssueModel.findOne(condition);
+  }
+
+  async updateIssue(
+    condition: Object,
+    value: Object
+  ): Promise<IssueDocument | null> {
+    return await IssueModel.findOneAndUpdate(condition, value, { new: true });
+  }
+
+  async deleteIssue(condition: Object): Promise<any> {
+    return await IssueModel.deleteOne(condition);
   }
 }
 
