@@ -2,7 +2,9 @@ import Message from '@constants/message';
 import StatusCode from '@constants/statusCode';
 import httpHandler, { HttpError, HttpSuccess } from '@core/httpHandler';
 import Singleton from '@core/singleton';
+import authService from '@services/authService';
 import projectService from '@services/projectService';
+import userService from '@services/userService';
 import { NextFunction, Request, Response } from 'express';
 
 class ProjectController extends Singleton {
@@ -34,17 +36,26 @@ class ProjectController extends Singleton {
     next: NextFunction
   ): Promise<any> {
     try {
-      const { name, key, ...others } = req.body;
+      const { name, key } = req.body;
 
       const project = await projectService.readProject({ key });
       if (project) {
         throw new HttpError(StatusCode.BAD_REQUEST, Message.DUPLICATED);
       }
 
+      const token = req.header('Authorization')!.split('Bearer ')[1];
+      const decodedToken = await authService.verifyToken(token);
+      const uid = decodedToken.uid;
+      const user = await userService.readUser({ _id: uid });
+
+      if (!user) {
+        throw new HttpError(StatusCode.BAD_REQUEST, Message.BAD_REQUEST);
+      }
+
       const newProject = await projectService.createProject({
         name,
         key,
-        ...others,
+        members: [user],
       });
 
       return httpHandler.success(

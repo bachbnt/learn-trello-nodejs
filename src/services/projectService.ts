@@ -11,8 +11,7 @@ class ProjectService extends Singleton {
   }
 
   async createProject(project: Project): Promise<ProjectDocument> {
-    const { name, key } = project;
-    return await new ProjectModel({ name, key }).save();
+    return await new ProjectModel(project).save();
   }
 
   async readProject(condition: Object): Promise<ProjectDocument | null> {

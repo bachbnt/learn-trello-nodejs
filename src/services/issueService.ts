@@ -6,8 +6,8 @@ class IssueService extends Singleton {
     return super.getInstance(IssueService);
   }
 
-  async readIssues(): Promise<IssueDocument[]> {
-    return await IssueModel.find();
+  async readIssues(projectId: string): Promise<IssueDocument[]> {
+    return await IssueModel.find({ project: projectId });
   }
 
   async createIssue(issue: Issue): Promise<IssueDocument> {
@@ -27,6 +27,10 @@ class IssueService extends Singleton {
 
   async deleteIssue(condition: Object): Promise<any> {
     return await IssueModel.deleteOne(condition);
+  }
+
+  async countIssues(projectId: string): Promise<number> {
+    return await IssueModel.count({ project: projectId });
   }
 }
 

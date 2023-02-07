@@ -15,7 +15,7 @@ export const userSchema = new Schema(
     password: { type: String, require: true, select: false },
     fullName: { type: String, require: true },
   },
-  { collection: DbSchema.USER }
+  { collection: DbSchema.USER, versionKey: false }
 );
 
 export const UserModel = mongoose.model<UserDocument>(

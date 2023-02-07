@@ -6,8 +6,8 @@ import { User } from './user';
 export interface Project {
   name: string;
   key: string;
-  members: User[];
-  issues: Issue[];
+  members?: User[];
+  issues?: Issue[];
 }
 
 export type ProjectDocument = Project & Document;
@@ -33,7 +33,7 @@ export const projectSchema = new Schema(
       },
     ],
   },
-  { collection: DbSchema.PROJECT }
+  { collection: DbSchema.PROJECT, versionKey: false }
 );
 
 export const ProjectModel = mongoose.model<ProjectDocument>(

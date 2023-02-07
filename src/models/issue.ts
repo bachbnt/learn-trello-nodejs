@@ -1,7 +1,5 @@
 import DbSchema from '@constants/dbSchema';
 import mongoose, { Document, Schema } from 'mongoose';
-import { Project } from './project';
-import { User } from './user';
 
 export enum IssueType {
   TASK = 'TASK',
@@ -25,14 +23,14 @@ export enum IssueStatus {
 
 export interface Issue {
   name: string;
-  summary: string;
-  description: string;
+  key: string;
+  description?: string;
   type: IssueType;
   priority: IssuePriority;
   status: IssueStatus;
-  project: Project;
-  assignee: User;
-  reporter: User;
+  project: string;
+  assignee?: string;
+  reporter: string;
 }
 
 export type IssueDocument = Issue & Document;
@@ -40,7 +38,7 @@ export type IssueDocument = Issue & Document;
 export const issueSchema = new Schema(
   {
     name: { type: String, require: true },
-    summary: { type: String, require: true },
+    key: { type: String, require: true },
     description: { type: String },
     type: {
       type: String,
@@ -76,7 +74,7 @@ export const issueSchema = new Schema(
       ref: DbSchema.USER,
     },
   },
-  { collection: DbSchema.ISSUE }
+  { collection: DbSchema.ISSUE, versionKey: false }
 );
 
 export const IssueModel = mongoose.model<IssueDocument>(
