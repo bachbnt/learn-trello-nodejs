@@ -5,6 +5,7 @@ import Singleton from '@core/singleton';
 import authService from '@services/authService';
 import issueService from '@services/issueService';
 import projectService from '@services/projectService';
+import userService from '@services/userService';
 import { NextFunction, Request, Response } from 'express';
 
 class IssueController extends Singleton {
@@ -53,6 +54,15 @@ class IssueController extends Singleton {
       const token = req.header('Authorization')!.split('Bearer ')[1];
       const decodedToken = await authService.verifyToken(token);
       const uid = decodedToken.uid;
+      const reporter = await userService.readUser({ _id: uid });
+      if (!reporter) {
+        throw new HttpError(StatusCode.BAD_REQUEST, Message.BAD_REQUEST);
+      }
+
+      const assignee = await userService.readUser({ _id: assigneeId });
+      if (!assignee) {
+        throw new HttpError(StatusCode.BAD_REQUEST, Message.BAD_REQUEST);
+      }
 
       const newIssue = await issueService.createIssue({
         name,
@@ -60,9 +70,9 @@ class IssueController extends Singleton {
         type,
         priority,
         status,
-        assignee: assigneeId,
-        reporter: uid,
-        project: projectId,
+        assignee,
+        reporter,
+        project,
       });
 
       return httpHandler.success(

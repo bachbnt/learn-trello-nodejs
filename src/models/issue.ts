@@ -1,5 +1,7 @@
 import DbSchema from '@constants/dbSchema';
 import mongoose, { Document, Schema } from 'mongoose';
+import { Project } from './project';
+import { User } from './user';
 
 export enum IssueType {
   TASK = 'TASK',
@@ -28,9 +30,9 @@ export interface Issue {
   type: IssueType;
   priority: IssuePriority;
   status: IssueStatus;
-  project: string;
-  assignee?: string;
-  reporter: string;
+  project: Project;
+  assignee?: User;
+  reporter: User;
 }
 
 export type IssueDocument = Issue & Document;
